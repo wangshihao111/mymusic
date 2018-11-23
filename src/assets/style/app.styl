@@ -1,0 +1,59 @@
+@import './reset.styl'
+@import './icon.styl'
+  
+.side-enter, .side-leave-to
+  transform: translate3d(-100%,0,0)
+.side-leave, .side-enter-to
+  transform: translate3d(0,0,0)
+.side-enter-active, .side-leave-active
+  transition: all .3s
+
+.fade-enter, .fade-leave-to
+  opacity: 0
+.fade-leave, .fade-enter-to
+  opacity: 1
+.fade-enter-active, .fade-leave-active
+  transition: all .3s
+
+.page-enter, .page-leave-to
+  transform: translate3d(100%,0,0)
+.page-enter-to, .page-leave
+  transform: translate3d(0,0,0)
+.page-enter-active, .page-leave-active
+  transition: all .3s
+
+.search-enter, .search-leave-to
+  transform: translate3d(100%, -100%,0) scale(0);
+.search-enter-to, .search-leave
+  transform: translate3d(0, 0,0) scale(1)
+.search-enter-active, .search-leave-active
+  transition: all .3s
+
+.suggest-enter, .suggest-leave-to
+  transform: scale3d(0,0,0)
+.suggest-enter-to, .suggest-leave
+  transform: scale3d(1,1,1)
+.suggest-enter-active, .suggest-leave-active
+  transition: all .2s
+
+.scale-enter, .scale-leave-to
+  transform: scale3d(0,0,0)
+.scale-enter-to, .scale-leave
+  transform: scale3d(1,1,1)
+.scale-enter-active, .scale-leave-active
+  transition: all .2s
+
+.el-carousel__button
+  display: block
+  opacity: .48
+  width: 10px
+  height: 10px
+  background-color: #fff
+  border: none
+  border-radius: 50%
+  outline: 0
+  padding: 0
+  margin: 0
+  cursor: pointer
+  -webkit-transition: .3s
+  transition: .3s
