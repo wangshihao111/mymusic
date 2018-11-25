@@ -47,3 +47,10 @@ export function getSongList(id) {
     }
   });
 }
+
+// 获取专辑详情
+export function getAlbumDetail(id) {
+  return fetch('api/album?id=' + id)
+    .then(res => res.json())
+    .then(res => Promise.resolve(res));
+}

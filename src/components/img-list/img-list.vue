@@ -10,7 +10,9 @@
         :key="index"
         @click="itemClick(item, index)"
       >
-        <img class="img" v-lazy="item.picUrl">
+        <div class="inner-wrapper">
+          <img class="img" v-lazy="item.picUrl">
+        </div>
         <span class="play-count">
           <span class="fa fa-headphones"></span>
           {{formatCount(item.playCount)}}
@@ -87,9 +89,20 @@ export default {
       flex: 0 0 32%;
       height: auto;
       margin-bottom: 2px;
-      .img {
+      .inner-wrapper {
+        position: relative;
+        box-sizing: border-box;
         width: 100%;
         height: auto;
+        padding-top: 100%;
+        overflow: hidden;
+      }
+      .img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         border-radius: 3px;
       }
       .play-count {

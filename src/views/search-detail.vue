@@ -3,7 +3,7 @@
     <div class="search-detail">
       <div class="reco" v-if="multi && (multi.album || multi.artist)">
         <h1 class="titl">您可能喜欢</h1>
-        <div class="al" v-if="multi.album" @click="$router.push('')">
+        <div class="al" v-if="multi.album" @click="onAlbumClick(multi.album[0])">
           <div class="img">
             <img v-lazy="multi.album[0].picUrl">
           </div>
@@ -32,7 +32,14 @@
 import List from 'components/list/list';
 import { getSearch, getMultiMatchSearch } from 'assets/js/search';
 import { mapActions, mapMutations } from 'vuex';
+
 export default {
+  props: {
+    query: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
     List
   },
@@ -57,6 +64,9 @@ export default {
       this.setPlayList(this.songList);
       this.playSong({ item, index });
     },
+    onAlbumClick(album) {
+      this.$router.push(`/index/search/songlist/${album.id}/album/${true}`);
+    },
     _normalizeSongs(songs) {
       // 格式化歌曲信息
       let list = [];
@@ -77,10 +87,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$route.params.query) {
-      this.$router.back();
-    }
-    this.getSearchResult(this.$route.params.query);
+    this.getSearchResult(this.query);
   }
 };
 </script>

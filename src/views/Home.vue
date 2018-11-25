@@ -25,6 +25,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  overflow: hidden;
 }
 
 </style>

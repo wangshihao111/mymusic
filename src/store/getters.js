@@ -1,6 +1,6 @@
-export const isLogin = state => state.isLogin
+export const loginState = state => state.loginState
 
-export const userId = state => state.userId
+export const userInfo = state => state.userInfo
 
 // export const songListInfo = state => state.songListInfo
 
@@ -17,3 +17,8 @@ export const progress = state => state.progress
 export const playIndex = state => state.playIndex
 
 export const bigPlayer = state => state.bigPlayer
+
+export const favSongs = state => state.favSongs;
+
+
+export const favChange = state => state.favChange;

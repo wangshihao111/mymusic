@@ -1,8 +1,9 @@
 <template>
   <transition name="page">
     <div class="search">
-      <search-box @back="$router.back()"
+      <search-box @back="goBack"
         @change="onQueryChange"
+        @blur="showSuggest=false"
         class="search-box"
       ></search-box>
       <transition name="suggest">
@@ -57,6 +58,7 @@
         </el-dialog>
       </section>
       <router-view></router-view>
+      <search-detail :query="searchText" v-if="searchDetailVisible"></search-detail>
     </div>
   </transition>
 </template>
@@ -64,12 +66,13 @@
 <script>
 import SearchBox from 'components/search-box/search-box'
 import Suggest from 'components/suggest/suggest'
+import SearchDetail from './search-detail'
 import {getSearchHot} from 'assets/js/search'
 import { addHistory, deleteAllHistory, getHistory } from 'assets/js/storage'
 
 export default {
   components: {
-    SearchBox, Suggest
+    SearchBox, Suggest, SearchDetail
   },
   data() {
     return {
@@ -78,33 +81,46 @@ export default {
       hotSearch: [], // 热词
       searchHistory: getHistory() || [],
       dialogVisible: false,
+      searchDetailVisible: false,
+      searchText: '' // 建议框中选择的搜索关键字
     }
   },
   methods: {
+    goBack() {
+      if (this.searchDetailVisible) {
+        this.searchDetailVisible = false;
+      } else {
+        this.$router.back();
+      }
+    },
     onQueryChange(query) {
       this.query = query;
       this.showSuggest = true;
     },
     gotoSearch(item) {
       if (item) {
-        this.$router.push('/index/search/search-detail/' + item);
+        this.searchText = item;
+        this.searchDetailVisible = true;
         addHistory(item);
         this.searchHistory = getHistory();
         return;
       }
       if (this.query != '') {
-        this.$router.push('/index/search/search-detail/' + this.query);
+        this.searchDetailVisible = true;
+        this.searchText = this.query;
         addHistory(this.query);
         this.searchHistory = getHistory()
       }
     },
     gotoSearchItem(item) {
       if (item.name) {
-        this.$router.push('/index/search/search-detail/' + item.name)
+        this.searchText = item.name;
+        this.searchDetailVisible = true;
         addHistory(item.name)
         this.searchHistory = getHistory()
       } else if (item.first) {
-        this.$router.push('/index/search/search-detail/' + item.first)
+        this.searchText = item.first;
+        this.searchDetailVisible = true;
         addHistory(item.first)
         this.searchHistory = getHistory()
       }
@@ -148,7 +164,7 @@ export default {
     top: $searchHeight;
     width: 90%;
     margin: 10px 5%;
-    z-index: 10;
+    z-index: 80;
   }
   .search-singer {
     position: relative;

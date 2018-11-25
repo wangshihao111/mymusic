@@ -1,6 +1,10 @@
 <template>
   <transition name="slide">
     <div class="bottom-option">
+      <el-alert :title="tipText" type="success" show-icon v-show="showSuccess">
+        <el-alert title="错误" type="error" center show-icon v-show="showError">
+        </el-alert>
+      </el-alert>
       <div class="mask" @click.stop="close"></div>
       <div class="inner">
         <p class="titl">歌曲：{{song.item.name}}</p>
@@ -9,16 +13,16 @@
             <i class="fa fa-play-circle-o"></i>
             {{playText}}
           </li>
-          <li class="item">
+          <li class="item" @click="onFavClick">
             <i class="fa fa-plus-square-o"></i>
-            <span>收藏到歌单</span>
+            <span>{{favText}}</span>
           </li>
-          <li class="item">
+          <li class="item" @click="onSingerClick">
             <i class="fa fa-user"></i>
             <span>歌手：</span>
             <span>{{song.item.singer.name}}</span>
           </li>
-          <li class="item">
+          <li class="item" @click="onAlbumClick">
             <i class="fa fa-user-circle-o"></i>
             专辑：{{song.item.al.name}}
           </li>
@@ -29,7 +33,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import _user from 'assets/js/user';
 
 export default {
   props: {
@@ -42,30 +47,110 @@ export default {
   },
   data() {
     return {
-      playText: ''
+      playText: '',
+      showSuccess: false,
+      showError: false,
+      index: -1, // 在收藏歌曲中的索引， -1为没有收藏
+      tipText: ''
     };
   },
   computed: {
-    ...mapGetters(['playIndex', 'playingSong', 'playList', 'playIndex'])
+    ...mapGetters([
+      'playIndex',
+      'playingSong',
+      'playList',
+      'playIndex',
+      'favSongs'
+    ]),
+    favText() {
+      return this.index === -1 ? '收藏' : '取消收藏';
+    }
   },
   methods: {
     ...mapActions(['playNext', 'playSong']),
+    ...mapMutations(['setPlayList', 'setFavChange']),
     onPlayClick(id) {
       if (id === this.playingSong.id) {
         this.playNext();
       } else {
-        this.playSong({
-          item: this.song.item,
-          index: this.song.index
-        });
+        if (!this.playList.length) {
+          // 如果为空队列，则加进去并播放
+          let list = this.playList.slice(0);
+          list.push(this.song.item);
+          this.setPlayList(list);
+          this.playSong({
+            item: this.song.item,
+            index: 0
+          });
+        } else {
+          let index = this.playList.findIndex(
+            item => item.id === this.song.item.id
+          );
+          if (index === -1) {
+            let list = this.playList.slice(0);
+            list.push(this.song.item);
+            this.setPlayList(list);
+            this.playSong({
+              item: this.song.item,
+              index: this.playList.length - 1
+            });
+          } else {
+            this.playSong({
+              item: this.song.item,
+              index: index
+            });
+          }
+        }
       }
     },
     close() {
       this.$emit('close');
+    },
+    onAlbumClick() {
+      this.$router.push(`/album/${this.song.item.al.id}/album/true`);
+    },
+    onSingerClick() {
+      this.$router.push('/singer-detail/' + this.song.item.singer.id);
+    },
+    onFavClick() {
+      if (this.index == -1) {
+        _user.addFavSong(this.song.item.id).then(res => {
+          if (res.code === 200) {
+            this.showSuccess = true;
+            this.tipText = '收藏成功';
+            this.setFavChange();
+            setTimeout(() => {
+              this.showSuccess = false;
+            }, 2000);
+          } else {
+            this.showError = true;
+            setTimeout(() => {
+              this.showSuccess = false;
+            }, 2000);
+          }
+        });
+      } else {
+        _user.deleteFavSong(this.song.item.id).then(res => {
+          if (res.code === 200) {
+            this.showSuccess = true;
+            this.tipText = '取消收藏成功';
+            this.setFavChange();
+            setTimeout(() => {
+              this.showSuccess = false;
+            }, 2000);
+          } else {
+            this.showError = true;
+            setTimeout(() => {
+              this.showSuccess = false;
+            }, 2000);
+          }
+        });
+      }
     }
   },
   mounted() {
     this.playText = this.song.text;
+    this.index = this.favSongs.findIndex(item => item.id === this.song.item.id);
   }
 };
 </script>

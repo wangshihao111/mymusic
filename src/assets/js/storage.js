@@ -1,6 +1,8 @@
 const HISTORY = '__HISTORY__';
+const USER = '__USER__'
 
-const store = {
+
+export const store = {
   set(key, val) {
     localStorage.setItem(key, JSON.stringify(val));
   },
@@ -33,4 +35,22 @@ export function deleteAllHistory() {
 
 export function getHistory() {
   return store.get(HISTORY);
+}
+
+export function setUserInfo(obj) {
+  if (existUserInfo(obj)) {
+    return;
+  }
+  store.set(USER, obj)
+}
+
+export function getUserInfo() {
+  return store.get(USER);
+}
+
+function existUserInfo(obj) {
+  var old = store.get(USER);
+  if (JSON.stringify(old) === JSON.stringify(obj)) {
+    return true;
+  } else return false;
 }

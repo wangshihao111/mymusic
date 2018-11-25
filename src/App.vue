@@ -22,6 +22,8 @@ import Layout from 'components/layout/layout';
 import SideBar from 'components/side-bar/side-bar';
 import HeaderNav from 'components/header-nav/header-nav';
 import Player from 'components/player/player';
+import { store } from 'assets/js/storage';
+import { mapMutations } from 'vuex'
 
 export default {
   components: {
@@ -34,6 +36,17 @@ export default {
     return {
       showAside: false
     };
+  },
+  methods: {
+    ...mapMutations(['setLoginState', 'setUserInfo'])
+  },
+  created() {
+    let state = store.get('loginState');
+    let user = store.get('userData');
+    if (state && user) {
+      this.setLoginState(true);
+      this.setUserInfo(user); 
+    }
   }
 };
 </script>

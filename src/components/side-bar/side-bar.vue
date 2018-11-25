@@ -1,15 +1,15 @@
 <template>
   <div class="side-bar">
     <div class="main-wrapper">
-      <header class="header">
+      <div class="header" :style="backCls">
         <div class="avatar">
-          <img :src="require('assets/img/default.jpg')">
+          <img :src="avatarPic">
         </div>
-        <div class="info">
-          <p class="name">dog</p>
+        <div class="info" @click="onAvatarClick">
+          <p class="name">{{userInfo.account ? userInfo.account.userName : '请登录'}}</p>
           <p class="right">签到</p>
         </div>
-      </header>
+      </div>
       <div class="split"></div>
       <div class="menu-list">
         <ul class="list-wrapper">
@@ -62,17 +62,58 @@
         <i class="fa fa-cog"></i>
         <span>设置</span>
       </div>
-      <div class="item">
+      <div class="item" @click="onLogoutClick">
         <i class="fa fa-sign-out"></i>
-        <span>退出</span>
+        <span>{{loginState ? '退出' : '未登陆'}}</span>
       </div>
     </footer>
   </div>
 </template>
 
 <script>
-export default {
+import { mapGetters, mapMutations } from 'vuex'
+import _login from 'assets/js/login'
+import {setUserInfo, store} from 'assets/js/storage'
 
+export default {
+  data() {
+    return {
+    }
+  },
+  computed: {
+    ...mapGetters(['userInfo', 'loginState']),
+    avatarPic() {
+      if (this.loginState) {
+        return this.userInfo.profile.avatarUrl;
+      } else {
+        return require('assets/img/default.jpg');
+      }
+    },
+    backCls() {
+      if (this.loginState) {
+        return {
+          background: `url(${this.userInfo.profile.backgroundUrl})`
+        }
+      }
+    }
+  },
+  methods: {
+    ...mapMutations(['setLoginState', 'setUserInfo']),
+    onAvatarClick() {
+      this.loginState ? null : this.$router.push('/login')
+    },
+    onLogoutClick() {
+      _login.logout().then(res => {
+        if (res.code === 200) {
+          this.setLoginState(false);
+          this.setUserInfo({});
+          setUserInfo({});
+          store.set('loginState', false);
+          store.set('userData', {});
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -88,16 +129,16 @@ export default {
   -webkit-overflow-scrolling: touch;
   .header {
     position: relative;
+    padding-top: 20px;
     width: 100%;
     .avatar {
       width: 50px;
       height: 50px;
-      margin-top: 20px;
       margin-left: 20px;
       border-radius: 50%;
       background: #666;
       img {
-        width: 100;
+        width: 100%;
         height: 100%;
         border-radius: 50%;
       }

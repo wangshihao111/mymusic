@@ -1,6 +1,9 @@
 export default {
   setLoginState(state, val) {
-    state.isLogin = val;
+    state.loginState = val;
+  },
+  setUserInfo(state, val) {
+    state.userInfo = val;
   },
   // setSongListInfo(state, val) {
   //   state.songListInfo = val
@@ -25,5 +28,11 @@ export default {
   },
   setBigPlayer(state, val) {
     state.bigPlayer = val;
+  },
+  setFavSongs(state, val) {
+    state.favSongs = val;
+  },
+  setFavChange(state) {
+    state.favChange = !state.favChange;
   }
 }

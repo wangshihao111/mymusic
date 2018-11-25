@@ -10,7 +10,7 @@
       </header>
       <section class="top" ref="top">
         <div class="img-wrapper">
-          <img v-lazy="artist.picUrl" ref="img">
+          <img :src="artist.picUrl" ref="img">
         </div>
         <div class="mask" ref="mask"></div>
         <div class="action" ref="action">
@@ -28,7 +28,7 @@
         <div>
           <section class="list-wrapper" ref="list">
             <h1 class="list-top"></h1>
-            <list :list="songs" @selectItem="play" @option="showOption"></list>
+            <list :list="songs" @selectItem="onItemSelect" @option="showOption"></list>
           </section>
           <loading v-show="!songs.length"></loading>
         </div>
@@ -46,7 +46,6 @@ import Loading from 'components/loading/loading';
 import { listOption } from 'assets/js/mixin';
 import _singer from 'assets/js/singer';
 import _ from 'lodash';
-import { mapActions, mapMutations } from 'vuex';
 
 const OFFSET_Height = 40;
 
@@ -66,12 +65,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['playSong']),
-    ...mapMutations(['setPlayList']),
-    play(item, index) {
-      this.playSong({ item, index });
-      this.setPlayList(this.songs);
-    },
     back() {
       this.$router.back();
     },
@@ -79,21 +72,6 @@ export default {
       this._handleScroll(e);
       this._handlePullDowm(e);
     }, 20),
-    listTouchStart(e) {
-      if (!this.touch) {
-        this.touch = {};
-      }
-      this.touch.start = e.touches[0].clientY;
-    },
-    listTouchMove: _.throttle(function(e) {
-      this._handleTouchMove(e);
-    }, 0),
-    listTouchEnd() {
-      const list = this.$refs.list;
-      const top = this.$refs.top;
-      list.style['transform'] = `translateY(0)`;
-      top.style['transform'] = `scale(1)`;
-    },
     _normalizeSongs(songs) {
       let list = [];
       songs.forEach(item => {
@@ -143,18 +121,24 @@ export default {
         top.style['transform'] = `scale(1)`;
         this.$refs.action.transform = `translate3d(0,0,0)`;
       }
+    },
+    _initDetail() {
+      const top = this.$refs.top;
+      const scroll = this.$refs.scroll;
+      let topHeight = top.clientHeight;
+      scroll.$el.style.top = topHeight + 'px';
+      !this.$route.params.id && this.$router.back();
+      _singer.getSingerSongs(this.$route.params.id).then(res => {
+        this.artist = res.artist;
+        this.songs = this._normalizeSongs(res.hotSongs);
+      });
     }
   },
   mounted() {
-    const top = this.$refs.top;
-    const scroll = this.$refs.scroll;
-    let topHeight = top.clientHeight;
-    scroll.$el.style.top = topHeight + 'px';
-    !this.$route.params.id && this.$router.back();
-    _singer.getSingerSongs(this.$route.params.id).then(res => {
-      this.artist = res.artist;
-      this.songs = this._normalizeSongs(res.hotSongs);
-    });
+    this._initDetail();
+  },
+  activated() {
+    this._initDetail();
   }
 };
 </script>

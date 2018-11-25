@@ -9,6 +9,8 @@
           v-model="query"
           type="text"
           placeholder="搜索歌曲、歌手"
+          @blur="onBlur"
+          ref="input"
         />
       </div>
       <span class="clear-btn" v-show="query !== ''" @click="clear">
@@ -35,6 +37,12 @@ export default {
     },
     back() {
       this.$emit('back');
+    },
+    onBlur() {
+      this.$emit('blur')
+    },
+    blur() {
+      this.$refs['input'].blur();
     }
   },
   mounted() {
