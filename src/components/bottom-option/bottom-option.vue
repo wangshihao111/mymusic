@@ -164,14 +164,16 @@ $optionHeight: 50px;
   bottom: $playerHeight;
   top: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
   .mask {
     position: absolute;
-    top: 0;
+    top: -100%;
+    bottom: $playerHeight;
     width: 100%;
-    height: 100%;
-    background: rgba(100, 100, 100, 0.3);
+    opacity: .5;
+    background: rgba(100, 100, 100, 1);
+    transition: all .5s;
+    z-index: 1000;
   }
   .inner {
     position: absolute;
@@ -180,6 +182,7 @@ $optionHeight: 50px;
     height: 250px;
     border-radius: 5px;
     background: #fff;
+    z-index: 1001;
   }
   .titl {
     display: block;
@@ -209,14 +212,27 @@ $optionHeight: 50px;
 
 .slide-enter,
 .slide-leave-to {
-  opacity: 0;
+  transform: translateY(100%);
 }
 .slide-leave,
 .slide-enter-to {
-  opacity: 1;
+  transform: translateY();
 }
 .slide-enter-active,
 .slide-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+.fade-leave,
+.fade-enter-to {
+  opacity: 1;
+}
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.2s linear;
 }
 </style>

@@ -10,5 +10,6 @@ export default {
   playIndex: 999999999,
   bigPlayer: false, // 是否使用全屏播放器,
   favSongs: [],
-  favChange: false // 收藏改变时触发，不论真假
+  favSingers: [],
+  favChange: false, // 收藏改变时触发，不论真假
 }

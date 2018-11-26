@@ -2,6 +2,10 @@
   <transition name="page">
     <div class="favorite">
       <back @close="$router.back()" class="back"></back>
+      <el-alert :title="successText" type="success" v-show="showSuccess" show-icon>
+      </el-alert>
+      <el-alert :title="errorText" type="error" v-show="showError" show-icon>
+      </el-alert>
       <div class="tab-wrapper">
         <div class="tab-title">
           <div class="titl" @click="tabPage=1" :class="{active: tabPage === 1}">专辑</div>
@@ -10,7 +14,7 @@
         </div>
         <div class="tab-content">
           <scroll class="album" v-show="tabPage === 1">
-            <div>
+            <div class="album-content">
               暂无收藏
             </div>
           </scroll>
@@ -19,7 +23,7 @@
               <li class="item" v-for="(singer, index) in artists" :key="index" @click="selectSinger(singer)">
                 <img v-lazy="singer.picUrl" class="avatar">
                 <p class="desc">{{singer.name}}
-                  <span class="fav">取消收藏</span>
+                  <span class="fav" @click.stop="onFavClick(singer)">取消收藏</span>
                 </p>
               </li>
             </ul>
@@ -33,9 +37,11 @@
 
 <script>
 import Back from 'components/back/back';
-import Scroll from 'components/scroll/scroll'
+import Scroll from 'components/scroll/scroll';
+import { favSinger } from 'assets/js/mixin';
 
 export default {
+  mixins: [favSinger],
   components: {
     Back,
     Scroll
@@ -129,6 +135,9 @@ export default {
       }
       .album {
         color: red;
+        .album-content {
+          text-align: center;
+        }
       }
       .artists {
         .list {

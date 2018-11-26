@@ -24,6 +24,7 @@ import HeaderNav from 'components/header-nav/header-nav';
 import Player from 'components/player/player';
 import { store } from 'assets/js/storage';
 import { mapMutations } from 'vuex'
+import _login from 'assets/js/login'
 
 export default {
   components: {
@@ -41,12 +42,16 @@ export default {
     ...mapMutations(['setLoginState', 'setUserInfo'])
   },
   created() {
-    let state = store.get('loginState');
-    let user = store.get('userData');
-    if (state && user) {
-      this.setLoginState(true);
-      this.setUserInfo(user); 
-    }
+    _login.checkState().then(res => {
+      if (res.code === 200) {
+        let user = store.get('userData');
+        this.setLoginState(true);
+        this.setUserInfo(user);
+      } else {
+        this.setLoginState(false);
+        this.setUserInfo({});
+      }
+    });
   }
 };
 </script>

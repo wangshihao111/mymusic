@@ -34,5 +34,8 @@ export default {
   },
   setFavChange(state) {
     state.favChange = !state.favChange;
+  },
+  setFavSingers(state, val) {
+    state.favSingers = val;
   }
 }

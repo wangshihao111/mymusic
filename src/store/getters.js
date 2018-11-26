@@ -20,5 +20,6 @@ export const bigPlayer = state => state.bigPlayer
 
 export const favSongs = state => state.favSongs;
 
-
 export const favChange = state => state.favChange;
+
+export const favSingers = state => state.favSingers;

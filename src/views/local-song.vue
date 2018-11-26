@@ -50,8 +50,9 @@ import List from 'components/list/list';
 import BottomOption from 'components/bottom-option/bottom-option';
 import { listOption } from 'assets/js/mixin';
 import { getSongList } from 'assets/js/recommend';
-
+import { store } from 'assets/js/storage'
 export default {
+
   mixins: [listOption],
   components: {
     Back,
@@ -78,7 +79,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setFavSongs']),
+    ...mapMutations(['setFavSongs', 'setFavSingers']),
     onFavClick() {
       if (!this.loginState) {
         this.errorText = '还没有登陆哦！'
@@ -121,6 +122,7 @@ export default {
       this.loginState &&
         _user.getFavArtists().then(res => {
           res.code === 200 && (this.favoriteArtists = res.data);
+          this.setFavSingers(this.favoriteArtists);
         });
     },
     async _getAllFavSongs(playList) {
@@ -140,6 +142,7 @@ export default {
         if (res.code === 200) {
           this.playList = res.playlist;
           this._getAllFavSongs(res.playlist);
+          store.set('pid', res.playlist.length ? res.playlist[0].id : null);
         }
       });
     }

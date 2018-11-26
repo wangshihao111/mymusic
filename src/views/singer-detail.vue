@@ -1,11 +1,23 @@
 <template>
   <transition name="page">
     <div class="singer-detail" @click.stop>
+      <el-alert
+        :title="successText"
+        type="success"
+        v-show="showSuccess"
+        show-icon>
+      </el-alert>
+      <el-alert
+        :title="errorText"
+        type="error"
+        v-show="showError"
+        show-icon>
+      </el-alert>
       <header class="header" ref="header">
         <div class="arrow" @click="back"><i class="el-icon-arrow-left"></i></div>
         <div class="desc" v-show="topShow">
           <span class="name">{{artist.name}}</span>
-          <span class="fav">+收藏</span>
+          <span class="fav" @click.stop="onFavClick(artist)">{{favText(artist)}}</span>
         </div>
       </header>
       <section class="top" ref="top">
@@ -19,7 +31,7 @@
             <p class="desc"></p>
           </div>
           <div class="right">
-            <span class="fav">+收藏</span>
+            <span class="fav" @click.stop="onFavClick(artist)">{{favText(artist)}}</span>
           </div>
         </div>
       </section>
@@ -46,6 +58,7 @@ import Loading from 'components/loading/loading';
 import { listOption } from 'assets/js/mixin';
 import _singer from 'assets/js/singer';
 import _ from 'lodash';
+import { favSinger } from 'assets/js/mixin'
 
 const OFFSET_Height = 40;
 
@@ -56,10 +69,10 @@ export default {
     BottomOption,
     Loading
   },
-  mixins: [listOption],
+  mixins: [listOption, favSinger],
   data() {
     return {
-      topShow: true,
+      topShow: false,
       artist: {},
       songs: []
     };
@@ -106,6 +119,7 @@ export default {
       let topHeight = this.$refs.top.clientHeight;
       let y = -e.y;
       this.$refs.mask.style['opacity'] = y / topHeight;
+      y > topHeight - 20 ? (this.topShow = true) : (this.topShow = false);
       y >= topHeight - 20 //  顶部返回栏的样式
         ? (this.$refs.header.style['background'] = 'rgba(7,16,25, .5)')
         : (this.$refs.header.style['background'] = '');
@@ -218,7 +232,6 @@ export default {
   .top {
     position: relative;
     width: 100%;
-    height: 220px;
     .img-wrapper {
       position: relative;
       width: 100%;
@@ -244,7 +257,7 @@ export default {
     }
     .action {
       position: absolute;
-      bottom: 0;
+      bottom: 20px;
       width: 100%;
       display: flex;
       color: #fff;

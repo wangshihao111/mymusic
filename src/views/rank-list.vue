@@ -1,38 +1,40 @@
 <template>
   <transition name="page">
-    <scroll class="rank-list">
-      <div>
-        <back title="排行榜" @close="$router.back()" class="back"></back>
-        <header class="header">
-          <img :src="listInfo && listInfo.artistToplist.coverUrl" class="bakcground">
-          <div class="img-wrapper">
-            <img v-lazy="listInfo && listInfo.artistToplist.coverUrl">
-          </div>
-          <div class="info">
-            <h1 class="titl">{{listInfo && listInfo.artistToplist.name}}</h1>
-          </div>
-        </header>
-        <h1 class="main-title">排行榜</h1>
-        <ul class="list-wrapper" v-if="list.length">
-          <li class="list-item"
-            v-for="(item, index) in list"
-            :key="index"
-            @click="onItemClick(item)"
-            >
+    <div class="rank-list">
+      <scroll>
+        <div>
+          <back title="排行榜" @close="$router.back()" class="back"></back>
+          <header class="header">
+            <img :src="listInfo && listInfo.artistToplist.coverUrl" class="bakcground">
             <div class="img-wrapper">
-              <img v-lazy="item.coverImgUrl">
+              <img v-lazy="listInfo && listInfo.artistToplist.coverUrl">
             </div>
-            <div class="body">
-              <p>1. {{item.tracks[0].first}} - {{item.tracks[0].second}}</p>
-              <p>2. {{item.tracks[1].first}} - {{item.tracks[1].second}}</p>
-              <p>3. {{item.tracks[2].first}} - {{item.tracks[2].second}}</p>
+            <div class="info">
+              <h1 class="titl">{{listInfo && listInfo.artistToplist.name}}</h1>
             </div>
-          </li>
-        </ul>
-        <loading v-show="!list.length"></loading>
-        <router-view style="z-index: 10;"></router-view>
-      </div>
-    </scroll>
+          </header>
+          <h1 class="main-title">排行榜</h1>
+          <ul class="list-wrapper" v-if="list.length">
+            <li class="list-item"
+              v-for="(item, index) in list"
+              :key="index"
+              @click="onItemClick(item)"
+              >
+              <div class="img-wrapper">
+                <img v-lazy="item.coverImgUrl">
+              </div>
+              <div class="body">
+                <p>1. {{item.tracks[0].first}} - {{item.tracks[0].second}}</p>
+                <p>2. {{item.tracks[1].first}} - {{item.tracks[1].second}}</p>
+                <p>3. {{item.tracks[2].first}} - {{item.tracks[2].second}}</p>
+              </div>
+            </li>
+          </ul>
+          <loading v-show="!list.length"></loading>
+        </div>
+      </scroll>
+      <router-view style="z-index: 10;"></router-view>
+    </div>
   </transition>
 </template>
 

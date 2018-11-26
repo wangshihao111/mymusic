@@ -2,6 +2,18 @@
   <transition name="page">
     <div class="singer">
       <back title="歌手" @close="$router.back()" class="back"></back>
+      <el-alert
+          :title="successText"
+          type="success"
+          v-show="showSuccess"
+          show-icon>
+        </el-alert>
+        <el-alert
+          :title="errorText"
+          type="error"
+          v-show="showError"
+          show-icon>
+        </el-alert>
       <header class="header">
         <h2 class="titl" v-show="!categoryShow">
           <span class="now">{{nowCat}}</span>
@@ -31,7 +43,7 @@
               <li class="item" v-for="(singer, index) in singers" :key="index" @click="selectSinger(singer)">
                 <img v-lazy="singer.picUrl" class="avatar">
                 <p class="desc">{{singer.name}}
-                  <span class="fav">+收藏</span>
+                  <span class="fav" @click.stop="onFavClick(singer)">{{favText(singer)}}</span>
                 </p>
               </li>
             </ul>
@@ -50,8 +62,11 @@ import _singer from 'assets/js/singer'
 import Back from 'components/back/back'
 import Loading from 'components/loading/loading'
 import Scroll from 'components/scroll/scroll'
+import { mapGetters, mapMutations } from 'vuex';
+import { favSinger } from 'assets/js/mixin'
 
 export default {
+  mixins: [favSinger],
   components: {
     Back, Loading, Scroll
   },
@@ -68,8 +83,10 @@ export default {
       categoryShow: false,
       singers: [],
       nowCat: '全部歌手', // 当前所选分类
-      more: true // 是否还有更多
+      more: true, // 是否还有更多,
     }
+  },
+  computed: {
   },
   methods: {
     onScroll(e) {

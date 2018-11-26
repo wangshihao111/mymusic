@@ -3,6 +3,18 @@
     <transition name="player">
       <div class="full-screen-player" v-show="bigPlayer">
         <back :title="title" class="back" @close="setBigPlayer(false)"></back>
+        <el-alert
+          :title="successText"
+          type="success"
+          v-show="showSuccess"
+          show-icon>
+        </el-alert>
+        <el-alert
+          :title="errorText"
+          type="error"
+          v-show="showError"
+          show-icon>
+        </el-alert>
         <img :src="playList[playIndex] && playList[playIndex].al.picUrl" class="background">
         <div class="center"
           @touchstart="onTouchStart"
@@ -51,8 +63,8 @@
             <li class="control" @click="playNext">
               <i class="el-icon-d-arrow-right"></i>
             </li>
-            <li class="control">
-              <i class="fa fa-heart"></i>
+            <li class="control" @click="onFavClick">
+              <i class="fa" :class="favIcon"></i>
             </li>
           </ul>
         </div>
@@ -87,6 +99,7 @@ import Scroll from 'components/scroll/scroll'
 import { formatTime } from 'assets/js/util'
 import { getLyric } from 'assets/js/music'
 import Lyric from 'assets/js/lyric'
+import _user from 'assets/js/user'
 
 export default {
   components: {
@@ -102,7 +115,11 @@ export default {
       currentLineNum: 0, //当前播放的歌词是第n行
       playingLyric: '',
       readyState: false,
-      showBottomList: false
+      showBottomList: false,
+      showSuccess: false,
+      successText: '',
+      showError: false,
+      errorText: ''
     }
   },
   computed: {
@@ -112,13 +129,19 @@ export default {
       'playList',
       'playState',
       'bigPlayer',
-      'playIndex'
+      'playIndex',
+      'favSongs',
+      'loginState'
     ]),
     title() {
       if (this.playList.length) {
         return this.playList[this.playIndex] ? this.playList[this.playIndex].name : '';
       }
       return '';
+    },
+    favIcon() {
+      const index = this.favSongs.findIndex(item => item.id === this.playingSong.id);
+      return index === -1 ? ' fa-heart-o' : ' fa-heart';
     },
     cdClass() {
       return this.playState === 'pause' ? 'cd-pause' : 'cd-play';
@@ -153,6 +176,49 @@ export default {
           break;
         default:
           break;
+      }
+    },
+    onFavClick() {
+      if (!this.loginState) {
+        this.errorText = '未登录，不可收藏';
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 2000);
+      }
+      const index = this.favSongs.findIndex(item => item.id === this.playingSong.id);
+      if (index === -1) {
+        _user.addFavSong(this.playingSong.id).then(res => {
+          if (res.code === 200) {
+            this.successText = '收藏成功'
+            this.showSuccess = true;
+            setTimeout(() => {
+              this.showSuccess = false;
+            }, 2000);
+          } else {
+            this.errorText = '收藏失败'
+            this.showError = true;
+            setTimeout(() => {
+              this.showError = false;
+            }, 2000)
+          }
+        });
+      } else {
+        _user.deleteFavSong(this.playingSong.id).then(res => {
+          if (res.code === 200) {
+            this.successText = '取消收藏成功'
+            this.showSuccess = true;
+            setTimeout(() => {
+              this.showSuccess = false;
+            }, 2000);
+          } else {
+            this.errorText = '取消收藏失败'
+            this.showError = true;
+            setTimeout(() => {
+              this.showError = false;
+            }, 2000);
+          }
+        })
       }
     },
     switchPlayState() {
@@ -411,10 +477,6 @@ export default {
       font-size: 30px;
       line-height: 30px;
       color: rgba(255,0,0,.6);
-      .fa-heart {
-        color: #ccc;
-        font-size: 25px;
-      }
     }
   }
   .list-mask {

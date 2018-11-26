@@ -4,7 +4,7 @@
       <img :src="imgUrl">
     </div>
     <div class="center">
-      <h3 class="name">{{playList[playIndex] && playList[playIndex].name || '音乐你的生活！'}}</h3>
+      <h3 class="name" :class="{'no-playing': !playingSong.id}">{{playList[playIndex] && playList[playIndex].name || '音乐你的生活！'}}</h3>
       <p class="singer">{{playList[playIndex] && playList[playIndex].singer.name}}</p>
     </div>
     <div class="right">
@@ -135,6 +135,10 @@ export default {
   line-height: 15px;
   .name {
     padding-top: 5px;
+    &.no-playing {
+      line-height: 30px;
+      font-size: 14px;
+    }
   }
   .singer {
     color: #666;
