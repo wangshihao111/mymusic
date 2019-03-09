@@ -7,6 +7,12 @@ const HOST = '0.0.0.0'
 
 const app = express()
 
+
+app.use(function(req, res, next) {
+  console.log(req.baseUrl, req.path);
+  next();
+})
+
 app.use('/api', proxy({
   target: 'http://localhost:3000',
   changeOrigin: true,

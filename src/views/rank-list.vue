@@ -1,9 +1,9 @@
 <template>
   <transition name="page">
     <div class="rank-list">
-      <scroll>
+      <back title="排行榜" @close="$router.back()" class="back"></back>
+      <scroll class="scroll">
         <div>
-          <back title="排行榜" @close="$router.back()" class="back"></back>
           <header class="header">
             <img :src="listInfo && listInfo.artistToplist.coverUrl" class="bakcground">
             <div class="img-wrapper">
@@ -23,10 +23,13 @@
               <div class="img-wrapper">
                 <img v-lazy="item.coverImgUrl">
               </div>
-              <div class="body">
+              <div class="body" v-if="item.tracks.length">
                 <p>1. {{item.tracks[0].first}} - {{item.tracks[0].second}}</p>
                 <p>2. {{item.tracks[1].first}} - {{item.tracks[1].second}}</p>
                 <p>3. {{item.tracks[2].first}} - {{item.tracks[2].second}}</p>
+              </div>
+              <div class="body" v-if="!item.tracks.length">
+                <div class="description">{{item.description}}</div>
               </div>
             </li>
           </ul>
@@ -75,6 +78,13 @@ export default {
   bottom: $playerHeight;
   width: 100%;
   background-color: #fff;
+}
+.scroll {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
 }
 .back {
   position: fixed;
@@ -151,6 +161,7 @@ export default {
       width: 100%;
       height: 100%;
       box-sizing: border-box;
+      overflow: hidden;
       padding: 10px 0 10px 0;
       @include border-1px(rgba(7,17,27,.2), bottom);
       p {
@@ -159,6 +170,12 @@ export default {
         color: rgb(7,17,27);
         line-height: 30px;
         white-space: nowrap;
+      }
+      .description {
+        padding-left: 10px;
+        font-size: 12px;
+        color: rgb(7,17,27);
+        line-height: 30px;
       }
     }
   }

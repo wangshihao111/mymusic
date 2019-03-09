@@ -62,7 +62,6 @@ import _singer from 'assets/js/singer'
 import Back from 'components/back/back'
 import Loading from 'components/loading/loading'
 import Scroll from 'components/scroll/scroll'
-import { mapGetters, mapMutations } from 'vuex';
 import { favSinger } from 'assets/js/mixin'
 
 export default {
