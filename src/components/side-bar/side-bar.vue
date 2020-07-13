@@ -95,6 +95,7 @@ export default {
           background: `url(${this.userInfo.profile.backgroundUrl})`
         }
       }
+      return '';
     }
   },
   methods: {

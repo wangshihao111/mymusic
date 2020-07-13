@@ -57,6 +57,7 @@ export default {
       if (this.playList[this.playIndex]) {
         return this.playList[this.playIndex].al.picUrl
       }
+      return '';
     },
     playIcon() {
       if (!this.playingSong.url) {
