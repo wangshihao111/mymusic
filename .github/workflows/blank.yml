@@ -28,7 +28,7 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: Install
-      run: npm install && yarn build && git submodule update
+      run: npm install && yarn build && git submodule init && git submodule update
 
     - name: Build and push Docker images
       uses: docker/build-push-action@v1.1.0
