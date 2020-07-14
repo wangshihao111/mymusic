@@ -20,9 +20,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Setup Node.js environment
-    - uses: actions/setup-node@v2.1.0
+      uses: actions/setup-node@v2.1.0
       with:
-       node-version: 12.14.0
+        node-version: 12.14.0
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@master
 
