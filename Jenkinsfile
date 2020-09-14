@@ -14,5 +14,11 @@ npm run build'''
       }
     }
 
+    stage('Docker build') {
+      steps {
+        sh 'docker build -t test-ci-build .'
+      }
+    }
+
   }
 }
