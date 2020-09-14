@@ -8,9 +8,11 @@ pipeline {
   stages {
     stage('node-build') {
       steps {
-        sh '''yarn
-yarn build
-'''
+        nodejs('12.18.3') {
+          sh '''yarn
+yarn build'''
+        }
+
       }
     }
 
