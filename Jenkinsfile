@@ -1,11 +1,17 @@
 pipeline {
-  agent none
+  agent {
+    docker {
+      image 'node:6-alpine'
+      args '-p 3000:3000'
+    }
+
+  }
   stages {
-    stage('node-build') {
+    stage('Build') {
       steps {
-        nodejs '12.18.3'
-        sh '''yarn 
-yarn build'''
+        sh '''npm install
+
+npm run build'''
       }
     }
 
