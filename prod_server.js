@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const express = require('express')
+const compress = require('compression')
 
 require('./NeteaseCloudMusicApi/app')
 
@@ -9,6 +10,7 @@ const PORT = 5000
 const HOST = '0.0.0.0'
 
 const app = express()
+app.use(compress())
 
 app.use(function(req, res, next) {
   console.log(req.baseUrl, req.path);
